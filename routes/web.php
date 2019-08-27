@@ -11,10 +11,18 @@
 |
 */
 
+use App\Http\Controllers\ProjectController;
+
 Route::get('/', function () {
     return view('welcome');
 });
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+ Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/projects', 'ProjectController@index');
+Route::get('/projects/{project}', 'ProjectController@show');
+
+
+Route::post('/projects', 'ProjectController@store');
