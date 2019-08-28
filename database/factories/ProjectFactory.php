@@ -3,11 +3,19 @@
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
 use App\Project;
+use App\User;
+
 use Faker\Generator as Faker;
 
 $factory->define(Project::class, function (Faker $faker) {
     return [
         'projectName'=>$faker->sentence,
-        'shortDescription'=>$faker->paragraph
+        'shortDescription'=>$faker->paragraph,
+        'owner_id'=> function () {
+            return factory(App\User::class)->create()->id;
+        }
     ];
-});
+    }
+);
+
+

@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-
 use App\Project;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -12,20 +11,37 @@ class ProjectsTest extends TestCase
 {
     use WithFaker, RefreshDatabase;
 
+     /** @test */
+
+    public function only_auth_users_can_create_a_project()
+    {
+        //$this->withoutExceptionHandling();
+
+        $attributes=factory('App\Project')->raw();
+
+        $this->post('/projects', $attributes)->assertRedirect('/login');
+    }
+
     /** @test */
     public function a_user_can_create_a_project()
     {
-        // $this->withoutExceptionHandling();
+         $this->withoutExceptionHandling();
 
-      $attributes =factory('App\Project')->raw();
+        $this->actingAs(factory('App\User')->create());
+
+        $attributes =factory('App\Project')->raw(
+            [ 'owner_id'=>auth()->id()]
+
+        );
+
 
         $this->post('/projects', $attributes);
         $this->assertDatabaseHas('projects', $attributes);
-         //  dd($attributes);
+       //   dd($attributes);
         $this->get('/projects')->assertSee($attributes['projectName']);
     }
 
-     /** @test */
+    /** @test */
     public function a_user_can_view_a_project()
     {
         // $this->withoutExceptionHandling();
@@ -39,6 +55,8 @@ class ProjectsTest extends TestCase
 
     public function a_project_requires_a_title()
     {
+        $this->actingAs(factory('App\User')->create());
+
         $attributes=factory('App\Project')->raw(['projectName'=>'']);
         $this->post('/projects', $attributes)->assertSessionHasErrors('projectName');
     }
@@ -47,8 +65,11 @@ class ProjectsTest extends TestCase
 
     public function a_project_requires_a_description()
     {
-         $attributes=factory('App\Project')->raw(['shortDescription'=>'']);
+        $this->actingAs(factory('App\User')->create());
 
-         $this->post('/projects', $attributes)->assertSessionHasErrors('shortDescription');
+        $attributes=factory('App\Project')->raw(['shortDescription'=>'']);
+
+        $this->post('/projects', $attributes)->assertSessionHasErrors('shortDescription');
     }
+
 }
