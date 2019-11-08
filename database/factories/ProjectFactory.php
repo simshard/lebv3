@@ -3,7 +3,7 @@
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
 use App\Project;
-use App\User;
+
 
 use Faker\Generator as Faker;
 

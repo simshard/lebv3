@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Project;
 use Illuminate\Http\Request;
 
@@ -14,8 +15,12 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects=Project::all();
+         //$projects=Project::all();
+
+
+       $projects=auth()->user()->projects;
         //  dd($projects);
+
 
         return view('projects.index', compact('projects'));
     }
@@ -43,7 +48,7 @@ class ProjectController extends Controller
             'shortDescription'=>'required',
         ]);
         auth()->user()->projects()->create($attributes);
-
+        dd(Auth::id());
         return redirect('/projects');
     }
 
@@ -94,4 +99,6 @@ class ProjectController extends Controller
     {
         //
     }
+
+
 }

@@ -11,19 +11,13 @@
 |
 */
 
-use App\Http\Controllers\ProjectController;
-
 Route::get('/', function () {
      return view('welcome');
     }
 );
 
 Auth::routes();
-
- Route::get('/home', 'HomeController@index')->name('home');
-
-Route::get('/projects', 'ProjectController@index');
-Route::get('/projects/{project}', 'ProjectController@show');
-
-
+Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/projects', 'ProjectController@index')->middleware('auth');
+Route::get('/projects/{project}', 'ProjectController@show')->middleware('auth');
 Route::post('/projects', 'ProjectController@store')->middleware('auth');

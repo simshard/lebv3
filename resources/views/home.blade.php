@@ -10,13 +10,20 @@
                 <div class="card-header">Dashboard</div>
 
                 <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
+                    <h1>Projects</h1>
+                    <ul>
+                        @forelse ($projects as $project)
+                            <li>
+                                <a href="{{$project->path()}}">
+                                    <b>{{$project->projectName}}</b>
+                                </a>
+                                <em>{{$project->shortDescription}}</em>
+                            </li>
 
-                    You are logged in!
+                        @empty
+                            <li>No Projects yet</li>
+                        @endforelse
+                    </ul>
                 </div>
             </div>
 

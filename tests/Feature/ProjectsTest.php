@@ -2,24 +2,43 @@
 
 namespace Tests\Feature;
 
-use App\Project;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ProjectsTest extends TestCase
 {
+
+
     use WithFaker, RefreshDatabase;
 
      /** @test */
 
-    public function only_auth_users_can_create_a_project()
+    public function guests_cannot_create_a_project()
     {
         //$this->withoutExceptionHandling();
 
         $attributes=factory('App\Project')->raw();
 
         $this->post('/projects', $attributes)->assertRedirect('/login');
+    }
+
+    /** @test */
+
+    public function guests_cannot_view_projects()
+    {
+        //$this->withoutExceptionHandling();
+
+        $attributes=factory('App\Project')->raw();
+
+        $this->get('/projects', $attributes)->assertRedirect('/login');
+    }
+
+    /** @test */
+    public function guests_cannot_view_a_single_projects()
+    {
+        $project=factory('App\Project')->create();
+        $this->get($project->path())->assertRedirect('/login');
     }
 
     /** @test */
@@ -31,7 +50,6 @@ class ProjectsTest extends TestCase
 
         $attributes =factory('App\Project')->raw(
             [ 'owner_id'=>auth()->id()]
-
         );
 
 
