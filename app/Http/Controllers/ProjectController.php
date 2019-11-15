@@ -2,26 +2,45 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Project;
 use Illuminate\Http\Request;
 
+/**
+ * Short desc
+ *
+ * @category ProjectController
+ * @package  Null
+ * @author   Display Name <Sim@localhost.local>
+ * @license  GPL http://opensource.org
+ * @link     http://opensource.org/licenses/gpl-license.php GNU Public License
+ */
+
 class ProjectController extends Controller
 {
+
+   /**
+     * Projects
+     */
+    public $projects;
+    /**
+     * Logged in user required on all route methods except index|show
+     */
+    public function __construct()
+    {
+        //$this->middleware('auth')->except(['index','show']);
+    }
+
     /**
      * Display a listing of the resource.
+     *
+     * @param \App\Project object $project comment text
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-         //$projects=Project::all();
-
-
-       $projects=auth()->user()->projects;
-        //  dd($projects);
-
-
+        // $projects=Project::all();  //all the projects
+          $projects=auth()->user()->projects; //list projects belonging to logged in user
         return view('projects.index', compact('projects'));
     }
 
@@ -32,7 +51,7 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        //
+        return  view('projects.create', ['project' => new Project]);
     }
 
     /**
@@ -48,7 +67,7 @@ class ProjectController extends Controller
             'shortDescription'=>'required',
         ]);
         auth()->user()->projects()->create($attributes);
-        dd(Auth::id());
+        //dd(Auth::id());
         return redirect('/projects');
     }
 
@@ -60,10 +79,10 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-
-         return view('projects.show', compact('project'));
-
-
+        if (auth()->user()->isNot($project->owner)) {
+             abort(403);
+        }
+        return view('projects.show', compact('project'));
     }
 
     /**
@@ -99,6 +118,4 @@ class ProjectController extends Controller
     {
         //
     }
-
-
 }

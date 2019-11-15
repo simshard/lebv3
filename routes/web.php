@@ -11,13 +11,21 @@
 |
 */
 
-Route::get('/', function () {
-     return view('welcome');
+Route::get(
+    '/',
+    function () {
+        return view('welcome');
     }
 );
 
 Auth::routes();
-Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/projects', 'ProjectController@index')->middleware('auth');
-Route::get('/projects/{project}', 'ProjectController@show')->middleware('auth');
-Route::post('/projects', 'ProjectController@store')->middleware('auth');
+
+Route::group(['middleware'=>'auth'],function() {
+    Route::get('/projects', 'ProjectController@index') ;
+    Route::get('/projects/create', 'ProjectController@create')->name('projects.create');
+    Route::post('/projects', 'ProjectController@store') ;
+    Route::get('/projects/{project}', 'ProjectController@show') ;
+    Route::get('/home', 'HomeController@index')->name('home') ;
+
+});
+
